@@ -586,6 +586,12 @@ body,
   overflow: hidden;
   max-width: 260px;
   max-height: 225px;
+  animation: 4500ms show ease;
+}
+
+@keyframes show {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .icon_and_temp_block {
