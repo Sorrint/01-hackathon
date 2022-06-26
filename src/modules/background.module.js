@@ -1,4 +1,7 @@
-import {Module} from '../core/module'
+import { Module } from '../core/module'
+import { randomColor } from '../utils'
+import { addEventContainer } from '../utils';
+
 
 export class BackgroundModule extends Module {
     constructor(type, text) {
@@ -6,6 +9,9 @@ export class BackgroundModule extends Module {
     }
 
     trigger(){
-        console.log('я фон')
-    }
+        addEventContainer(this.type);
+        const eventContainer = document.querySelector(`.${this.type}`);
+        eventContainer.style.display = 'none';
+        document.body.style.backgroundColor = `${randomColor()}`
+   }
 }

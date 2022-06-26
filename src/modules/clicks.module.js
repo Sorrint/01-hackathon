@@ -1,5 +1,6 @@
 import { Module } from "../core/module";
 import { randomColor } from "../utils";
+import { addEventContainer } from "../utils";
 
 export class ClicksModule extends Module {
   constructor(type, text) {
@@ -38,12 +39,24 @@ export class ClicksModule extends Module {
 
     this.result = document.createElement("section"); //result
     this.resultСontainer = document.createElement("div"); //result container
-    this.resultId = document.createElement("div"); //result id
+    this.resultAnswers = document.createElement("div"); //result answers
+    this.btn3 = document.createElement("button"); // result button
+    this.btnShadow3 = document.createElement("div"); // result button shadow
+    this.btn3Span = document.createElement("span"); //result span
+    this.btn4 = document.createElement("button"); // result button
+    this.btn4Span = document.createElement("span"); //result span
+    this.question = document.createElement("div"); //result description
   }
 
   trigger() {
-    const hasClicker = document.querySelector(".count-clicker");
-    if (!hasClicker) {
+    addEventContainer(this.type);
+    const eventContainer = document.querySelector(`.${this.type}`);
+    const isRun = document.querySelector(".timer");
+    if (isRun && isRun.textContent === "0") {
+      eventContainer.innerHTML = "";
+    }
+
+    if (!isRun || eventContainer.innerHTML === "") {
       this.render();
       this.buttonsAnimated();
       this.hideFirst();
@@ -52,10 +65,13 @@ export class ClicksModule extends Module {
       this.colored();
       this.timer;
       this.gameStart();
+      this.resetDom();
+      this.repeatGame();
     }
   }
 
   render() {
+    const eventContainer = document.querySelector(`.${this.type}`);
     /* Секция сыграем в игру */
     this.countNumbers.className = "count-numbers";
     this.countNumbersContainer.className = "count-container container";
@@ -67,7 +83,7 @@ export class ClicksModule extends Module {
     this.btn1Span.textContent = "ДА";
 
     this.btn1.append(this.btn1Span);
-    this.countNumbersContainer.append(this.countNumbersTitle, this.btnShadow1, this.btn1);
+    this.countNumbersContainer.append(this.countNumbersTitle, this.btn1, this.btnShadow1);
     this.countNumbers.append(this.countNumbersContainer);
 
     /* Секция Условия игры */
@@ -79,7 +95,7 @@ export class ClicksModule extends Module {
     this.descriptionParagraph.innerHTML = `Твоя задача очень проста: как только ты нажмешь на кнопку, игра запустится, и тебе нужно
     будет кликать в появившийся квадрат. Каждый удачный клик в квадрат будет засчитан, и когда
     игра закончится на экран выведется твой результат. Засчитываются любые клики
-    <strong>"ЛЕВОЙ"</strong> кнопки мыши! У тебя будет ровно <strong>ОДНА</strong> минута, с
+    <strong>"ЛЕВОЙ"</strong> кнопки мыши! У тебя будет ровно <strong>ДЕСЯТЬ</strong> СЕКУНД, с
     того момента как ты нажмешь кнопку "Начать".`;
     this.descriptionTitle.className = "description__title";
     this.descriptionTitle.textContent = "ИТАК, ТЫ ГОТОВ?!";
@@ -100,14 +116,14 @@ export class ClicksModule extends Module {
     /* Секция Игровое поле */
 
     this.block.className = "block";
-    this.blockСontainer.className = "container description-container";
+    this.blockСontainer.className = "container block-container";
     this.blockGame.className = "block-game";
     this.blockGameBG.className = "block-game-bg";
     this.timerBlockContainer.className = "timer-block";
     this.timerInfo.className = "info";
     this.timerInfo.innerHTML = "ВРЕМЕНИ ОСТАЛОСЬ:&nbsp";
     this.timerCount.className = "timer";
-    this.timerCount.textContent = 60;
+    this.timerCount.textContent = 10;
     this.clicksCount.className = "clicks";
 
     this.timerBlockContainer.append(this.timerInfo, this.timerCount);
@@ -118,14 +134,26 @@ export class ClicksModule extends Module {
 
     this.result.className = "result";
     this.resultСontainer.className = "result-container";
-    this.resultId.id = "result";
+    this.resultAnswers.className = "result-answers";
+    this.btn3.className = "game-repeat";
+    this.btn3.textContent = "ДА";
+    this.btn4.className = "game-delete";
+    this.btn4.textContent = "НЕТ";
+    this.btnShadow3.className = "game-shadow__three";
+    this.btn3Span.className = "game-span";
+    this.btn4Span.className = "game-span";
+    this.question.className = "qiestion";
+    this.question.textContent = "Хотите сыграть еще?";
 
-    this.resultСontainer.append(this.resultId);
+    this.btn3.append(this.btn3Span);
+    this.btn4.append(this.btn4Span);
+    this.resultAnswers.append(this.btn3, this.btn4, this.btnShadow3);
+    this.resultСontainer.append(this.question, this.resultAnswers);
     this.result.append(this.resultСontainer);
 
     /* Добавляем в DOM */
 
-    document.body.append(this.countNumbers, this.description, this.block, this.result);
+    eventContainer.append(this.countNumbers, this.description, this.block, this.result);
   }
 
   /* -----Создаем кнопки и игровое поле----- */
@@ -151,6 +179,20 @@ export class ClicksModule extends Module {
       this.blockGame.style.setProperty("--x", x + "px");
       this.blockGame.style.setProperty("--y", y + "px");
     };
+
+    this.btn3.onmousemove = (e) => {
+      const x = e.pageX - this.btn3.offsetLeft;
+      const y = e.pageY - this.btn3.offsetTop;
+      this.btn3.style.setProperty("--x", x + "px");
+      this.btn3.style.setProperty("--y", y + "px");
+    };
+
+    this.btn4.onmousemove = (e) => {
+      const x = e.pageX - this.btn4.offsetLeft;
+      const y = e.pageY - this.btn4.offsetTop;
+      this.btn4.style.setProperty("--x", x + "px");
+      this.btn4.style.setProperty("--y", y + "px");
+    };
   }
 
   /* -----Скрываем контент по клику на кнопки и добавляем новый----- */
@@ -166,6 +208,7 @@ export class ClicksModule extends Module {
     this.btn2.addEventListener("click", () => {
       this.description.style.display = "none";
       this.block.style.display = "flex";
+      this.blockGameBG.style.display = "block";
     });
   }
 
@@ -173,6 +216,7 @@ export class ClicksModule extends Module {
 
   clickCount() {
     let click = 0;
+    this.clicksCount.style.display = "block";
     this.blockGame.addEventListener("click", () => {
       click += 1;
       this.clicksCount.textContent = `Ваш результат: ${click} кликов`;
@@ -194,15 +238,39 @@ export class ClicksModule extends Module {
 
   timer() {
     let secs = this.timerCount.textContent;
-    setInterval(() => {
+    let timer = setInterval(() => {
       this.timerCount.textContent = --secs;
       if (this.timerCount.textContent == 0) {
+        clearInterval(timer);
         this.blockGame.style.display = "none";
         this.timerCount.style.display = "none";
         this.timerInfo.style.display = "none";
         this.blockGameBG.style.display = "none";
+        this.resultСontainer.style.display = "flex";
+        this.result.style.display = "block";
       }
     }, 1000);
+  }
+
+  /* ----- Функция reset ----- */
+
+  resetDom() {
+    this.btn4.addEventListener("click", () => {
+      location.reload();
+    });
+  }
+
+  /* ----- Функция repeat geme ----- */
+
+  repeatGame() {
+    this.btn3.addEventListener("click", () => {
+      this.block.style.display = "none";
+      this.result.style.display = "none";
+      this.clicksCount.style.display = "none";
+      this.countNumbers.style.display = "block";
+      this.timerCount.textContent = 5;
+      this.gameStart();
+    });
   }
 
   /* ----- Функция запускающая игру ----- */
@@ -211,8 +279,10 @@ export class ClicksModule extends Module {
     this.clickCount();
     this.btn2.addEventListener("click", () => {
       this.description.style.display = "none";
+      this.blockСontainer.style.display = "none";
       this.blockGame.style.display = "inline-flex";
       this.timerInfo.style.display = "block";
+      this.timerCount.style.display = "block";
       this.timer();
     });
   }
