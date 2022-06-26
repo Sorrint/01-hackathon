@@ -627,6 +627,12 @@ body,
   position: relative;
   width: 150px;
   height: 150px;
+  animation: 3500ms show ease;
+}
+
+@keyframes show {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .exmpl-svg {
