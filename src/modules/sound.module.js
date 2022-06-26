@@ -5,7 +5,6 @@ export class Soundmodule extends Module {
         super(type, text)
         this.logoHTML = document.createElement('logo');
         this.audioHTML = document.createElement('audio');
-
         this.textHint = document.createElement('span');
         this.soundContainer = document.createElement('div');
     }
@@ -31,12 +30,8 @@ export class Soundmodule extends Module {
         this.audioHTML.className = 'audio'
         this.audioHTML.setAttribute('controls', '');
         this.audioHTML.setAttribute('autoplay', '');
-        // this.audioHTML.setAttribute('volume', 0.5);
         this.audioHTML.volume =0.3;
-        // var audio = document.querySelector("audio");
-        // audio.volume = 0.5;
-        // var audio=document.querySelector("audio");
-        // audio.volume=0.5;
+
 
         this.logoHTML.className = 'logo'
 
